@@ -561,7 +561,7 @@
             filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.9));
         }
 
-        /* Secret Love Password Box */
+        /* Secret Love Password Box (CLEAN - NO VISIBLE HINT) */
         .password-unlock-card {
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(24px);
@@ -584,7 +584,7 @@
         .lock-subtitle {
             font-size: 0.86rem;
             color: #fbcfe8;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         .secret-input-field {
@@ -598,7 +598,7 @@
             color: #ffffff;
             text-align: center;
             outline: none;
-            margin-bottom: 8px;
+            margin-bottom: 18px;
             box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
             transition: all 0.3s ease;
         }
@@ -608,24 +608,12 @@
             box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
         }
 
-        .hint-text {
-            font-size: 0.78rem;
-            color: var(--gold-accent);
-            font-family: var(--font-mono);
-            font-weight: 700;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
         .unlock-btn {
             width: 100%;
             background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
             border: none;
             color: #ffffff;
-            padding: 12px 18px;
+            padding: 13px 18px;
             border-radius: 16px;
             font-size: 0.95rem;
             font-weight: 800;
@@ -921,7 +909,7 @@
             </button>
         </footer>
 
-        <!-- STAGE 3: SECRET SURPRISE GIFT & PASSWORD UNLOCK -->
+        <!-- STAGE 3: SECRET SURPRISE GIFT & PASSWORD UNLOCK (WITHOUT VISIBLE HINT) -->
         <div class="stage-surprise" id="stage-surprise-view">
             <div class="gift-stage-box" onclick="focusSecretInput()">
                 <div class="gift-box-lid" id="box-lid">
@@ -935,10 +923,6 @@
                 <p class="lock-subtitle">Type the 3 magic words from your heart to unlock Khushboo's special birthday gift! ❤️</p>
                 
                 <input type="text" id="secret-passcode-input" class="secret-input-field" placeholder="Type here..." autocomplete="off">
-                
-                <div class="hint-text">
-                    <i class="fa-solid fa-lightbulb"></i> Hint: Type <strong>"I love you"</strong> 💖
-                </div>
 
                 <button class="unlock-btn" onclick="verifySecretCode()">
                     <i class="fa-solid fa-lock-open"></i> Unlock Surprise Gift ✨
@@ -1049,7 +1033,6 @@
         let progressTimer = null;
         let introTimeouts = [];
 
-        // 1:30 Minute Total: Intro (~5.5s) + 6 Scenes (11.5s each = 69s) + Surprise (15.5s) = 90s
         const SCENE_TIME = 11500;
 
         function updateSceneDisplay() {
@@ -1122,7 +1105,6 @@
 
         // --- STAGE 1: INTRO SEQUENCE WITH FRESH AUDIO RESTART ---
         window.launchIntroMovie = function() {
-            // ALWAYS RESET AUDIO TO 0:00 WHEN STARTING NEW
             const bgAudio = document.getElementById('bg-music');
             const introTune = document.getElementById('intro-tune-audio');
             if (bgAudio) {
@@ -1134,9 +1116,7 @@
                 introTune.currentTime = 0;
             }
 
-            // Hide bottom buttons while movie plays
             document.getElementById('movie-bottom-bar').classList.remove('show-buttons');
-
             startKhushbooIntro(startNonStop1m30sMovie);
         };
 
@@ -1195,11 +1175,9 @@
         window.startNonStop1m30sMovie = function() {
             isPlaying = true;
 
-            // Hide surprise stage if open & hide bottom bar
             document.getElementById('stage-surprise-view').classList.remove('active');
             document.getElementById('movie-bottom-bar').classList.remove('show-buttons');
 
-            // Play Janam Janam song FROM EXACT 0:00 START
             const bgAudio = document.getElementById('bg-music');
             if (bgAudio) {
                 bgAudio.currentTime = 0;
@@ -1216,7 +1194,6 @@
             movieTimer = setInterval(() => {
                 scenesCount++;
                 if (scenesCount >= visualScenes.length) {
-                    // At ~1:30: Photos finished -> SHOW BUTTONS & OPEN SURPRISE STAGE!
                     clearInterval(movieTimer);
                     document.getElementById('movie-bottom-bar').classList.add('show-buttons');
                     showSurpriseStage();
@@ -1237,7 +1214,6 @@
         // --- STAGE 3: SURPRISE GIFT & SECRET PASSCODE ---
         window.showSurpriseStage = function() {
             stopMovie();
-            // Show bottom bar buttons once surprise stage is reached
             document.getElementById('movie-bottom-bar').classList.add('show-buttons');
 
             const surpriseView = document.getElementById('stage-surprise-view');
@@ -1268,10 +1244,9 @@
                     document.getElementById('final-birthday-modal').classList.add('active');
                 }, 500);
             } else {
-                // Wrong password - highlight shake
+                // Wrong password - shake and glow red (without revealing password)
                 input.style.borderColor = '#ef4444';
                 input.style.boxShadow = '0 0 20px rgba(239, 68, 68, 0.8)';
-                alert('Secret Hint: Type "I love you" ❤️');
                 setTimeout(() => {
                     input.style.borderColor = 'rgba(244, 63, 94, 0.5)';
                     input.style.boxShadow = 'none';
@@ -1279,7 +1254,6 @@
             }
         };
 
-        // Enter key in passcode input
         document.getElementById('secret-passcode-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') verifySecretCode();
         });
